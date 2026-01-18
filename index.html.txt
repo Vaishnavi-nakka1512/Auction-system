@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Auction System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <img src="auction.jpeg" alt="Auction Banner" height="300" width="500">
+    <h1>Advanced Auction System</h1>
+
+    <div id="user-info">
+        <span id="username"></span>
+        <span id="bank-balance">Bank Balance: $<span id="balance-amount">0.00</span></span>
+        <button id="logout" style="display:none;">Logout</button>
+    </div>
+</header>
+
+<main>
+    <h2>Active Auctions</h2>
+    <img src="watch1.png" alt="Auctions" height="150px" width="200px">
+     <img src="watch2.png" alt="" height="150px" width="200px"/>
+        <img src="car1.png" alt="" height="150px" width="200px"/>
+        <img src="watch3.jpeg" alt="" height="150px" width="200px"/>
+        <img src="car2.png" alt="" height="150px" width="200px"/>
+        <img src="watch4.png" alt="" height="150px" width="200px"/>
+        <img src="car3.png" alt="" height="150px" width="200px"/>
+    <ul id="item-list"></ul>
+
+    <section id="item-details" style="display:none;">
+        <h2 id="item-name"></h2>
+        <p id="item-description"></p>
+        <p>Current Highest Bid: $<span id="highest-bid">0.00</span></p>
+        <p>Time Remaining: <span id="time-remaining">00:00</span></p>
+
+        <input type="number" id="bid-amount" placeholder="Enter your bid" min="1">
+        <button id="place-bid">Place Bid</button>
+        <button id="close-auction" style="display:none;">Close Auction</button>
+
+        <p id="auction-winner" style="display:none;">
+            Winner: <span id="winner-name"></span>
+        </p>
+        <p id="auction-status"></p>
+    </section>
+</main>
+
+<footer>
+    <button id="show-login">Login</button>
+    <button id="show-register">Register</button>
+</footer>
+
+<!-- Login Modal -->
+<div id="login-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="close-login">&times;</span>
+        <h2>Login</h2>
+        <input type="text" id="login-username" placeholder="Username">
+        <input type="password" id="login-password" placeholder="Password">
+        <button id="login-btn">Login</button>
+    </div>
+</div>
+
+<!-- Register Modal -->
+<div id="register-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="close-register">&times;</span>
+        <h2>Register</h2>
+        <input type="text" id="register-username" placeholder="Username">
+        <input type="password" id="register-password" placeholder="Password">
+        <button id="register-btn">Register</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

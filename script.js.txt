@@ -1,0 +1,170 @@
+document.addEventListener("DOMContentLoaded", () => {
+
+    const auctionItems = [
+        {
+            id: 1,
+            name: "Vintage Watch",
+            description: "A beautiful vintage watch from the 1960s.",
+            highestBid: 0,
+            highestBidder: null,
+            endTime: Date.now() + 5 * 60 * 1000
+        },
+        {
+            id: 2,
+            name: "Classic Car",
+            description: "A classic car from the 1970s in pristine condition.",
+            highestBid: 5000,
+            highestBidder: "JohnDoe",
+            endTime: Date.now() + 5 * 60 * 1000
+        }
+    ];
+
+    const userData = {
+        JohnDoe: "password",
+        JaneSmith: "password123"
+    };
+
+    const userBalances = {};
+    let currentUser = null;
+
+    const itemList = document.getElementById("item-list");
+    const itemDetails = document.getElementById("item-details");
+    const itemName = document.getElementById("item-name");
+    const itemDescription = document.getElementById("item-description");
+    const highestBid = document.getElementById("highest-bid");
+    const timeRemaining = document.getElementById("time-remaining");
+    const bidAmount = document.getElementById("bid-amount");
+    const placeBidBtn = document.getElementById("place-bid");
+    const winnerName = document.getElementById("winner-name");
+    const auctionWinner = document.getElementById("auction-winner");
+    const auctionStatus = document.getElementById("auction-status");
+
+    const usernameDisplay = document.getElementById("username");
+    const balanceAmount = document.getElementById("balance-amount");
+    const logoutBtn = document.getElementById("logout");
+
+    let selectedItem = null;
+
+    function getRandomBalance() {
+        return Math.floor(Math.random() * 4000) + 1000;
+    }
+
+    function renderItems() {
+        itemList.innerHTML = "";
+        auctionItems.forEach(item => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <strong>${item.name}</strong>
+                <button onclick="viewItem(${item.id})">View Details</button>
+            `;
+            itemList.appendChild(li);
+        });
+    }
+
+    function formatTime(ms) {
+        if (ms <= 0) return "00:00";
+        const m = Math.floor(ms / 60000);
+        const s = Math.floor((ms % 60000) / 1000);
+        return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+    }
+
+    window.viewItem = function (id) {
+        selectedItem = auctionItems.find(i => i.id === id);
+
+        itemDetails.style.display = "block";
+        itemName.textContent = selectedItem.name;
+        itemDescription.textContent = selectedItem.description;
+        highestBid.textContent = selectedItem.highestBid.toFixed(2);
+        auctionWinner.style.display = "none";
+
+        const interval = setInterval(() => {
+            const remaining = selectedItem.endTime - Date.now();
+            timeRemaining.textContent = formatTime(remaining);
+
+            if (remaining <= 0) {
+                clearInterval(interval);
+                auctionStatus.textContent = "Auction Ended";
+                auctionWinner.style.display = "block";
+                winnerName.textContent = selectedItem.highestBidder || "No bids";
+            }
+        }, 1000);
+    };
+
+    placeBidBtn.addEventListener("click", () => {
+        const bid = parseFloat(bidAmount.value);
+
+        if (!currentUser) {
+            alert("Login required");
+            return;
+        }
+
+        if (!selectedItem || Date.now() > selectedItem.endTime) {
+            alert("Auction ended");
+            return;
+        }
+
+        if (bid <= selectedItem.highestBid || bid > userBalances[currentUser]) {
+            alert("Invalid bid");
+            return;
+        }
+
+        selectedItem.highestBid = bid;
+        selectedItem.highestBidder = currentUser;
+        userBalances[currentUser] -= bid;
+
+        highestBid.textContent = bid.toFixed(2);
+        balanceAmount.textContent = userBalances[currentUser].toFixed(2);
+        bidAmount.value = "";
+    });
+
+    document.getElementById("login-btn").onclick = () => {
+        const u = document.getElementById("login-username").value;
+        const p = document.getElementById("login-password").value;
+
+        if (userData[u] === p) {
+            currentUser = u;
+            userBalances[u] = getRandomBalance();
+            usernameDisplay.textContent = `Welcome, ${u}`;
+            balanceAmount.textContent = userBalances[u].toFixed(2);
+            logoutBtn.style.display = "inline";
+            document.getElementById("login-modal").style.display = "none";
+        } else {
+            alert("Invalid login");
+        }
+    };
+
+    document.getElementById("register-btn").onclick = () => {
+        const u = document.getElementById("register-username").value;
+        const p = document.getElementById("register-password").value;
+
+        if (userData[u]) {
+            alert("User exists");
+            return;
+        }
+
+        userData[u] = p;
+        alert("Registered successfully");
+        document.getElementById("register-modal").style.display = "none";
+    };
+
+    logoutBtn.onclick = () => {
+        currentUser = null;
+        usernameDisplay.textContent = "";
+        balanceAmount.textContent = "0.00";
+        logoutBtn.style.display = "none";
+    };
+
+    document.getElementById("show-login").onclick = () =>
+        document.getElementById("login-modal").style.display = "block";
+
+    document.getElementById("show-register").onclick = () =>
+        document.getElementById("register-modal").style.display = "block";
+
+    document.getElementById("close-login").onclick = () =>
+        document.getElementById("login-modal").style.display = "none";
+
+    document.getElementById("close-register").onclick = () =>
+        document.getElementById("register-modal").style.display = "none";
+
+    renderItems();
+});
